@@ -5,6 +5,17 @@ from components.initialize_services import initialize_services
 query_engine = initialize_services()
 
 st.title("Ask Priya")
+with st.expander("ℹ️ Disclaimer"):
+    st.caption(
+        "For official immigration advice please consult a certified lawyer"
+    )
+
+### Initial message ###
+message = st.chat_message(
+    "assistant", avatar="https://raw.githubusercontent.com/manasvitickoo/ask_divya_img/main/ask_divya.png")
+message.write(
+    "Hello there, what questions about US immigration can I help you with today?")
+#######################
 
 client = Priya(query_engine)
 
