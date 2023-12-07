@@ -3,6 +3,7 @@ from client import Priya
 from components.initialize_services import initialize_services
 
 query_engine = initialize_services()
+avatar_img = "https://raw.githubusercontent.com/manasvitickoo/ask_divya_img/main/ask_divya.png"
 
 st.title("Ask Priya")
 with st.expander("ℹ️ Disclaimer"):
@@ -12,7 +13,7 @@ with st.expander("ℹ️ Disclaimer"):
 
 ### Initial message ###
 message = st.chat_message(
-    "assistant", avatar="https://raw.githubusercontent.com/manasvitickoo/ask_divya_img/main/ask_divya.png")
+    "assistant", avatar=avatar_img)
 message.write(
     "Hello there, what questions about US immigration can I help you with today?")
 #######################
@@ -23,7 +24,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
+    with st.chat_message(message["role"], avatar=(avatar_img if message["role"] == "assistant" else None)):
         st.markdown(message["content"])
 
 if prompt := st.chat_input("What would you like to ask about?"):
@@ -31,7 +32,7 @@ if prompt := st.chat_input("What would you like to ask about?"):
     with st.chat_message("user"):
         st.markdown(prompt)
     response = client.make_query(st.session_state.messages[-1]["content"])
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant", avatar=avatar_img):
         st.markdown(response)
     st.session_state.messages.append(
         {"role": "assistant", "content": response})
