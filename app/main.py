@@ -1,9 +1,12 @@
 import streamlit as st
 from client import Priya
+from components.initialize_services import initialize_services
+
+query_engine = initialize_services()
 
 st.title("Ask Priya")
 
-client = Priya()
+client = Priya(query_engine)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

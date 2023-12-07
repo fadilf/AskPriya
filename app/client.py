@@ -1,22 +1,16 @@
 # client.py
 
-from components import LanguageModel
+from components import LanguageModel, MakeResponse
 # QueryProcessor, Embedder, DatabaseRetriever, PromptTemplate
 
 
 class Priya:
-    def __init__(self):
-        # self.query_processor = QueryProcessor()
-        # self.embedder = Embedder()
-        # self.retriever = DatabaseRetriever()
-        # self.prompt_template = PromptTemplate()
+    def __init__(self, query_engine):
+        self.query_engine = query_engine
         self.language_model = LanguageModel()
+        self.make_response = MakeResponse(
+            self.language_model, self.query_engine)
 
     def make_query(self, query):
-        # processed_query = self.query_processor.process_query(query)
-        # embedding = self.embedder.embed_query(processed_query)
-        # documents = self.retriever.retrieve_documents(embedding, top_k=5)
-        # prompt = self.prompt_template.create_prompt(processed_query, documents)
-        answer = self.language_model.generate_answer(
-            query)  # TO-DO: replace with prompt later
+        answer = self.make_response.final_answer(query)
         return answer
