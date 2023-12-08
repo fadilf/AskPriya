@@ -113,8 +113,8 @@ ipython_config.py
 __pypackages__/
 
 # uscis folder
-uscis/
-ask_priya_index/
+# uscis/
+# ask_priya_index/
 
 # Celery stuff
 celerybeat-schedule
