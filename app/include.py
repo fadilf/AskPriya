@@ -12,6 +12,6 @@ def include(home=False):
 
     with st.sidebar:
         st.expander("ℹ️ Disclaimer").caption(
-                "For official immigration advice please consult a certified lawyer"
+                "For official immigration advice please consult a certified lawyer."
             )
         st.link_button("View on GitHub", "https://github.com/fadilf/AskPriya")
