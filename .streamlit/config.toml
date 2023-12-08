@@ -1,0 +1,16 @@
+[theme]
+# Primary color for interactive elements like buttons and progress bars.
+primaryColor = "#1E90FF"  # Dodger Blue, a vibrant shade of blue
+
+# Background color for the main content area.
+backgroundColor = "#F5F5DC"  
+
+# Background color for sidebar and other secondary elements.
+secondaryBackgroundColor = "#F8F8FF"  # Ghost White, a subtle contrast to Lavender
+
+# Color for text.
+textColor = "#2F4F4F"  # Dark Slate Gray, professional and easy to read
+
+# Font family for all text.
+font = "serif"
+
