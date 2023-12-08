@@ -115,7 +115,6 @@ __pypackages__/
 # uscis folder
 uscis/
 ask_priya_index/
-data/
 
 # Celery stuff
 celerybeat-schedule
