@@ -3,7 +3,7 @@ import os.path
 import pickle
 from datetime import datetime, timedelta
 import streamlit as st
-from include import include
+from components.include import include
 
 include()
 

@@ -1,6 +1,6 @@
 import streamlit as st
 from st_pages import add_page_title
-from include import include
+from components.include import include
 
 include()
 
