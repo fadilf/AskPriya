@@ -1,7 +1,7 @@
 import streamlit as st
 from client import Priya
 from components.initialize_services import initialize_services
-from include import include
+from components.include import include
 
 
 avatar_img = "https://raw.githubusercontent.com/manasvitickoo/ask_divya_img/main/ask_divya.png"
