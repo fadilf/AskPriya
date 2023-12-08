@@ -4,4 +4,7 @@ from include import include
 
 include()
 
-st.write("This is just a sample page!")
+with open("./README.md") as f:
+    readme_contents = f.read()
+
+st.markdown(readme_contents)
