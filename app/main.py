@@ -33,7 +33,7 @@ start_message.write("Examples of questions I can answer:")
 examples = [
     "What is USCIS?",
     "How do I check my case status?",
-    "What is a Green Card?",
+    "¿Puedo obtener una visa de opción STEM si voy a una universidad estadounidense?",
 ]
 example_buttons = [start_message.button(example) for example in examples]
 #######################
