@@ -5,3 +5,4 @@
 # from .prompt_template import PromptTemplate
 from .language_model import LanguageModel
 from .make_response import MakeResponse
+from .g_key import write_file

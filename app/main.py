@@ -20,8 +20,9 @@ def ask_and_respond(prompt):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
-    response = client.make_query(st.session_state.messages[-1]["content"])
     with st.chat_message("assistant", avatar=avatar_img):
+        with st.spinner('Processing...'):
+            response = client.make_query(st.session_state.messages[-1]["content"])
         st.markdown(response)
     st.session_state.messages.append(
         {"role": "assistant", "content": response})
