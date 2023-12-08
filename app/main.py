@@ -1,21 +1,23 @@
 import streamlit as st
 from client import Priya
 from components.initialize_services import initialize_services
+from include import include
+
+
+avatar_img = "https://raw.githubusercontent.com/manasvitickoo/ask_divya_img/main/ask_divya.png"
+st.set_page_config(page_title="Ask Priya - US Immigration AI Helper", page_icon=avatar_img)
+
+include(home=True)
+
+with open( "app/style.css" ) as css:
+    st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
 
 query_engine = initialize_services()
-avatar_img = "https://raw.githubusercontent.com/manasvitickoo/ask_divya_img/main/ask_divya.png"
-
-st.title("Ask Priya")
-with st.expander("ℹ️ Disclaimer"):
-    st.caption(
-        "For official immigration advice please consult a certified lawyer"
-    )
 
 ### Initial message ###
-message = st.chat_message(
-    "assistant", avatar=avatar_img)
-message.write(
-    "Hello there, what questions about US immigration can I help you with today?")
+with st.chat_message("assistant", avatar=avatar_img):
+    st.write("Hello there, what questions about US immigration can I help you with today?")
+    st.write("Examples of questions I can answer:")
 #######################
 
 client = Priya(query_engine)
