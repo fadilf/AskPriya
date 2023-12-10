@@ -2,19 +2,24 @@ import streamlit as st
 from client import Priya
 from components.initialize_services import initialize_services
 from components.include import include
+from components.dev_lens import DevLens
 
 
 avatar_img = "https://raw.githubusercontent.com/manasvitickoo/ask_divya_img/main/ask_divya.png"
-st.set_page_config(page_title="Ask Priya - US Immigration AI Helper", page_icon=avatar_img)
+st.set_page_config(
+    page_title="Ask Priya - US Immigration AI Helper", page_icon=avatar_img)
 
 include(home=True)
 
-with open( "app/style.css" ) as css:
-    st.markdown( f'<style>{css.read()}</style>' , unsafe_allow_html= True)
+with open("app/style.css") as css:
+    st.markdown(f'<style>{css.read()}</style>', unsafe_allow_html=True)
 
 query_engine = initialize_services()
 
 client = Priya(query_engine)
+# Define dev_mode
+dev_mode = True  # Set this to False to disable dev_mode
+
 
 def ask_and_respond(prompt):
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -22,14 +27,25 @@ def ask_and_respond(prompt):
         st.markdown(prompt)
     with st.chat_message("assistant", avatar=avatar_img):
         with st.spinner('Processing...'):
-            response = client.make_query(st.session_state.messages[-1]["content"])
+            response = client.make_query(
+                st.session_state.messages[-1]["content"])
         st.markdown(response)
+
+    # DevLens logic for dev_mode
+    if dev_mode:
+        dev_lens = DevLens(query_engine, prompt, response)
+        dev_results = dev_lens.return_rag_triad()
+        with st.expander("Development Mode Insights"):
+            st.json(dev_results)
+
     st.session_state.messages.append(
         {"role": "assistant", "content": response})
 
+
 ### Initial message ###
 start_message = st.chat_message("assistant", avatar=avatar_img)
-start_message.write("Hello there, what questions about US immigration can I help you with today?")
+start_message.write(
+    "Hello there, what questions about US immigration can I help you with today?")
 start_message.write("Examples of questions I can answer:")
 examples = [
     "What is USCIS?",
