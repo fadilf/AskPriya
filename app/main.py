@@ -18,7 +18,7 @@ query_engine = initialize_services()
 
 client = Priya(query_engine)
 # Define dev_mode
-dev_mode = True  # Set this to False to disable dev_mode
+dev_mode = False  # Set this to False to disable dev_mode
 
 
 def ask_and_respond(prompt):
