@@ -5,10 +5,69 @@ from .palm_multi import PaLMMultiEmbeddings
 from llama_index.llms.vertex import Vertex
 from llama_index.vector_stores import PGVectorStore
 from vertexai.language_models import InputOutputTextPair
+from llama_index.prompts import PromptTemplate
 import json
-from dotenv import load_dotenv
-
 from os import environ
+
+
+def language_mod_template(language: str):
+    return PromptTemplate(
+        "Please provide an answer only in the language "
+        + language
+        + " based solely on the provided sources. "
+        "When referencing information from a source, "
+        "cite the appropriate source(s) using their corresponding numbers. "
+        "Every answer should include at least one source citation. "
+        "Only cite a source when you are explicitly referencing it. "
+        "If none of the sources are helpful, you should indicate that. "
+        "For example:\n"
+        "Source 1:\n"
+        "The sky is red in the evening and blue in the morning.\n"
+        "Source 2:\n"
+        "Water is wet when the sky is red.\n"
+        "Query: When is water wet?\n"
+        "Answer: Water will be wet when the sky is red [2], "
+        "which occurs in the evening [1].\n"
+        "Now it's your turn. Below are several numbered sources of information:"
+        "\n------\n"
+        "{context_str}"
+        "\n------\n"
+        "Query: {query_str}\n"
+        "Answer: "
+    )
+
+
+def language_mod_refine_template(language: str):
+    return PromptTemplate(
+        "Please provide an answer only in the language "
+        + language
+        + " based solely on the provided sources. "
+        "When referencing information from a source, "
+        "cite the appropriate source(s) using their corresponding numbers. "
+        "Every answer should include at least one source citation. "
+        "Only cite a source when you are explicitly referencing it. "
+        "If none of the sources are helpful, you should indicate that. "
+        "For example:\n"
+        "Source 1:\n"
+        "The sky is red in the evening and blue in the morning.\n"
+        "Source 2:\n"
+        "Water is wet when the sky is red.\n"
+        "Query: When is water wet?\n"
+        "Answer: Water will be wet when the sky is red [2], "
+        "which occurs in the evening [1].\n"
+        "Now it's your turn. "
+        "We have provided an existing answer: {existing_answer}"
+        "Below are several numbered sources of information. "
+        "Use them to refine the existing answer. "
+        "If the provided sources are not helpful, you will repeat the existing answer."
+        "\nBegin refining!"
+        "\n------\n"
+        "{context_msg}"
+        "\n------\n"
+        "Query: {query_str}\n"
+        "Answer: "
+    )
+
 
 # load_dotenv()
 def prompt_cleaner(llm: Vertex):
@@ -21,7 +80,12 @@ def prompt_cleaner(llm: Vertex):
     }
 
     cleaner_model = chat_model.start_chat(
-        context="You are an expert in US immigration who understands multiple languages. You need to respond to whatever prompt is given to you by labeling the prompt language, converting the prompt into standard American English, and responding with a JSON formatted as: {\"language\": <language>, \"cleaned prompt\":<cleaned prompt>}",
+        context=(
+            "You are an expert in US immigration who understands multiple languages. "
+            "You need to respond to whatever prompt is given to you by labeling the prompt "
+            "language, converting the prompt into standard American English, and responding "
+            "with a JSON formatted as: {\"language\": <language>, \"cleaned prompt\":<cleaned prompt>}"
+        ),
         examples=[
             InputOutputTextPair(
                 input_text="What is USCIS?",
@@ -37,11 +101,11 @@ def prompt_cleaner(llm: Vertex):
             ),
         ],
     )
+
     def cleaner(prompt: str) -> dict[str, str]:
-        response = cleaner_model.send_message(
-            prompt, **parameters
-        )
+        response = cleaner_model.send_message(prompt, **parameters)
         return json.loads(response.text)
+
     return cleaner
 
 
@@ -72,20 +136,35 @@ class Priya:
             citation_chunk_size=512,
         )
         self._query_engine = query_engine
+        print(self._query_engine.get_prompts())
         self._prompt_cleaner = prompt_cleaner(llm)
-    
+
     def query(self, prompt: str):
         cleaned = self._prompt_cleaner(prompt)
+        language = cleaned["language"]
+        self._query_engine.update_prompts(
+            {
+                "response_synthesizer:text_qa_template": language_mod_template(
+                    language
+                ),
+                "response_synthesizer:refine_template": language_mod_refine_template(
+                    language
+                ),
+            }
+        )
+        print(self._query_engine.get_prompts())
         response = self._query_engine.query(cleaned["cleaned prompt"])
         sources = []
         for source in response.source_nodes:
-            sources.append({
-                "text": source.node.get_text(),
-                "page": source.metadata["page"],
-                "link": source.metadata["link"]
-            })
+            sources.append(
+                {
+                    "text": source.node.get_text(),
+                    "page": source.metadata["page"],
+                    "link": source.metadata["link"],
+                }
+            )
         return {
             "response": response.response.strip(),
             "sources": sources,
-            "cleanup": cleaned
+            "cleanup": cleaned,
         }
