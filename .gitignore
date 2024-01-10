@@ -112,6 +112,10 @@ ipython_config.py
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
 __pypackages__/
 
+# uscis folder
+# uscis/
+# ask_priya_index/
+
 # Celery stuff
 celerybeat-schedule
 celerybeat.pid
@@ -159,8 +163,9 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Streamlit environment files
+.streamlit/*.json
+.streamlit/credentials.toml
+.streamlit/secrets.toml
 
-ask-prita*.json
-.env
-
-.DS_STORE
+feed_cache.pkl
